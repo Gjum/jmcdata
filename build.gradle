@@ -1,0 +1,62 @@
+buildscript {
+	ext.kotlin_version = "1.3.61"
+	repositories {
+		mavenLocal()
+		mavenCentral()
+		jcenter()
+		maven { url "https://plugins.gradle.org/m2/" }
+	}
+	dependencies {
+		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+		classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.+'
+	}
+}
+
+apply plugin: "java"
+apply plugin: "kotlin"
+apply plugin: "maven-publish"
+apply plugin: "com.jfrog.bintray"
+
+group 'com.github.gjum.minecraft'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+	implementation "com.google.code.gson:gson:2.8.0"
+	testCompile "junit:junit:4.12"
+}
+
+processResources {
+	from "minecraft-data/data/dataPaths.json"
+	from "minecraft-data/data/pc/"
+	eachFile { fcp ->
+		fcp.path = "mcdata/" + fcp.path
+	}
+}
+
+publishing {
+	publications {
+		maven(MavenPublication) {
+			from components.java
+		}
+	}
+}
+
+bintray {
+	publications = ['maven']
+	pkg {
+		version.name = project.version
+		name = project.name
+		repo = 'minecraft'
+		licenses = ['MIT']
+		vcsUrl = 'https://github.com/Gjum/jmcdata.git'
+	}
+	user = 'gjum'
+	key = System.getenv('BINTRAY_APIKEY')
+}
