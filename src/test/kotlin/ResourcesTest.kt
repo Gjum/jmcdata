@@ -20,7 +20,6 @@ class ResourcesTest {
 	}
 
 	@Test
-	@Ignore // XXX re-enable once 1.14 blocks+windows data become available
 	fun `load resources 1_14_4`() {
 		val mcd = MinecraftData("1.14.4")
 		Assert.assertNotNull(mcd.items["stone"])
